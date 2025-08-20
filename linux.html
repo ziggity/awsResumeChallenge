@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Networking Fundamentals Study Guide</title>
+<style>
+    /* General Body Styles */
+    :root {
+        --linux-green: #4E9A06;
+        --dark-bg: #2e3436;
+        --light-gray: #f4f7f9;
+        --text-color: #333;
+        --card-bg: #fff;
+        --border-color: #e0e0e0;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+        background-color: var(--light-gray);
+        color: var(--text-color);
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* Main Content Container */
+    .container {
+        max-width: 950px;
+        margin: auto;
+        background: var(--card-bg);
+        padding: 20px 40px;
+        border-radius: 12px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Headings */
+    h1, h2 {
+        border-bottom: 2px solid var(--border-color);
+        padding-bottom: 10px;
+        margin-top: 30px;
+    }
+
+    h1 {
+        text-align: center;
+        color: var(--linux-green);
+        font-size: 2.5em;
+        margin-bottom: 20px;
+    }
+
+    h2 {
+        font-size: 1.8em;
+        color: var(--dark-bg);
+    }
+    
+    /* Intro & Navigation */
+    .intro {
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 1.1em;
+        color: #555;
+    }
+
+    .quick-nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        padding: 15px;
+        background-color: #fafafa;
+        border-radius: 8px;
+        margin-bottom: 40px;
+    }
+
+    .quick-nav a {
+        text-decoration: none;
+        background-color: var(--dark-bg);
+        color: white;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 0.9em;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .quick-nav a:hover {
+        background-color: var(--linux-green);
+        transform: translateY(-2px);
+    }
+    
+    /* Modules & Lists */
+    .module {
+        margin-bottom: 40px;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    li {
+        background: #f8f9fa;
+        padding: 15px;
+        margin-bottom: 12px;
+        border-radius: 8px;
+        border-left: 5px solid var(--dark-bg);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    li:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    }
+
+    /* Key Term Styling */
+    .command, .key-concept {
+        font-weight: bold;
+        font-family: 'Courier New', Courier, monospace;
+    }
+    .command { color: #c0392b; }
+    .key-concept { color: #27ae60; }
+
+    /* --- FLASHCARD MODE STYLES --- */
+    .hidden {
+        display: none !important;
+    }
+    
+    .flashcard-button-container {
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    #start-flashcards-btn, #exit-flashcards-btn {
+        background-color: var(--linux-green);
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        font-size: 1.1em;
+        font-weight: bold;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    #start-flashcards-btn:hover, #exit-flashcards-btn:hover {
+        background-color: #3e8e05;
+        transform: scale(1.05);
+    }
+
+    #flashcard-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .flashcard {
+        width: 90%;
+        max-width: 600px;
+        height: 400px;
+        background-color: transparent;
+        perspective: 1000px;
+        cursor: pointer;
+    }
+
+    .flashcard-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+    }
+
+    .flashcard.is-flipped .flashcard-inner {
+        transform: rotateY(180deg);
+    }
+
+    .card-front, .card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        font-size: 1.5em;
+        box-sizing: border-box;
+    }
+
+    .card-front {
+        background-color: var(--card-bg);
+        color: var(--dark-bg);
+    }
+
+    .card-back {
+        background-color: var(--dark-bg);
+        color: white;
+        transform: rotateY(180deg);
+        font-size: 1.1em;
+        line-height: 1.5;
+        white-space: pre-wrap;
+    }
+
+    .flashcard-nav {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+        gap: 20px;
+    }
+
+    .flashcard-nav button {
+        background-color: var(--card-bg);
+        border: 2px solid var(--dark-bg);
+        color: var(--dark-bg);
+        padding: 10px 20px;
+        font-size: 1em;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    
+    #card-progress {
+        color: white;
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .container { padding: 20px; }
+        h1 { font-size: 2em; }
+        h2 { font-size: 1.5em; }
+        .quick-nav { flex-direction: column; align-items: center; }
+        .card-front { font-size: 1.3em; }
+        .card-back { font-size: 1em; }
+    }
+</style>
+</head>
+<body>
+<div id="main-content">
+    <div class="container">
+        <h1>Linux Fundamentals Study Guide</h1>
+        <p class="intro">A comprehensive guide to core Linux concepts, commands, and practices. Use this cheat sheet and the flashcard mode to master the fundamentals. 🐧</p>
+
+        <div class="flashcard-button-container">
+            <button id="start-flashcards-btn">🧠 Start Flashcard Mode</button>
+        </div>
+
+        <nav class="quick-nav">
+            <a href="#module1">Intro & Commands</a>
+            <a href="#module2">Users & Groups</a>
+            <a href="#module3">File System & Files</a>
+            <a href="#module4">Permissions</a>
+            <a href="#module5">Processes & Services</a>
+            <a href="#module6">Bash Shell</a>
+            <a href="#module7">Software & Logs</a>
+        </nav>
+
+        <div id="module1" class="module">
+            <h2>🐧 1. Introduction & Command Line</h2>
+            <ul>
+                <li><span class="key-concept">Linux:</span> An open-source operating system kernel. A distribution (distro) like Ubuntu or Amazon Linux combines the kernel with other software to create a full OS.</li>
+                <li><span class="key-concept">The Shell:</span> A command-line interface (CLI) that interprets and executes your commands. Bash is the most common shell.</li>
+                <li><span class="command">ls:</span> Lists directory contents. Use <span class="command">ls -la</span> for a detailed, long-format list including hidden files.</li>
+                <li><span class="command">pwd:</span> Print Working Directory. Shows your current location in the filesystem.</li>
+                <li><span class="command">cd [directory]:</span> Change Directory. Use <span class="command">cd ..</span> to go up one level, and <span class="command">cd ~</span> or just <span class="command">cd</span> to go to your home directory.</li>
+                <li><span class="command">man [command]:</span> Displays the manual page for a command.</li>
+                <li><span class="command">clear:</span> Clears the terminal screen.</li>
+            </ul>
+        </div>
+        
+        <hr>
+
+        <div id="module2" class="module">
+            <h2>👥 2. Users and Groups</h2>
+            <ul>
+                <li><span class="key-concept">Root User:</span> The superuser with administrative privileges over the entire system. Use with caution.</li>
+                <li><span class="command">sudo [command]:</span> Superuser Do. Executes a command with root privileges.</li>
+                <li><span class="command">useradd [username]:</span> Creates a new user account.</li>
+                <li><span class="command">passwd [username]:</span> Sets or changes the password for a user.</li>
+                <li><span class="command">groupadd [groupname]:</span> Creates a new group.</li>
+                <li><span class="command">usermod -aG [group] [user]:</span> Adds a user to a supplementary group. The <span class="command">-a</span> (append) and <span class="command">-G</span> (groups) flags are crucial.</li>
+                <li><span class="key-concept">/etc/passwd:</span> File containing user account information.</li>
+                <li><span class="key-concept">/etc/group:</span> File containing group information.</li>
+            </ul>
+        </div>
+        
+        <hr>
+
+        <div id="module3" class="module">
+            <h2>📁 3. File System & Working with Files</h2>
+            <ul>
+                <li><span class="key-concept">File System Hierarchy:</span> A tree-like structure of directories. Key directories include <span class="command">/</span> (root), <span class="command">/home</span>, <span class="command">/etc</span> (configuration), <span class="command">/var</span> (variable data like logs), and <span class="command">/tmp</span> (temporary files).</li>
+                <li><span class="command">touch [filename]:</span> Creates an empty file or updates the timestamp of an existing file.</li>
+                <li><span class="command">mkdir [dirname]:</span> Creates a new directory.</li>
+                <li><span class="command">cp [source] [destination]:</span> Copies files or directories. Use <span class="command">cp -r</span> for recursive copy (for directories).</li>
+                <li><span class="command">mv [source] [destination]:</span> Moves or renames files or directories.</li>
+                <li><span class="command">rm [filename]:</span> Removes (deletes) a file. Use <span class="command">rm -r</span> to remove a directory and its contents. Be careful, there is no undo!</li>
+                <li><span class="command">cat [filename]:</span> Concatenate and display file content.</li>
+                <li><span class="command">less [filename]:</span> View file content one page at a time. More powerful than <span class="command">cat</span> for large files.</li>
+                <li><span class="key-concept">Text Editors:</span>
+                    <br>• <span class="command">nano:</span> A simple, beginner-friendly command-line text editor.
+                    <br>• <span class="command">vim / vi:</span> A powerful but complex modal text editor. Has insert mode and command mode.
+                </li>
+            </ul>
+        </div>
+        
+        <hr>
+
+        <div id="module4" class="module">
+            <h2>🔐 4. Managing File Permissions</h2>
+            <ul>
+                <li><span class="key-concept">Permission Groups:</span> Each file has permissions for three groups: <span class="command">User</span> (the owner), <span class="command">Group</span> (the group owner), and <span class="command">Other</span> (everyone else).</li>
+                <li><span class="key-concept">Permission Types:</span>
+                    <br>• <span class="command">Read (r):</span> View file contents or list directory contents. (Value: 4)
+                    <br>• <span class="command">Write (w):</span> Modify file contents or create/delete files in a directory. (Value: 2)
+                    <br>• <span class="command">Execute (x):</span> Run a file as a script or enter a directory. (Value: 1)
+                </li>
+                <li><span class="command">chmod [permissions] [file]:</span> Change mode. Modifies file permissions.
+                    <br>• <span class="key-concept">Symbolic method:</span> <span class="command">chmod u+x,g-w file.txt</span> (Add execute for user, remove write for group).
+                    <br>• <span class="key-concept">Octal (numeric) method:</span> <span class="command">chmod 755 script.sh</span> (rwx for user, r-x for group and other).
+                </li>
+                <li><span class="command">chown [user]:[group] [file]:</span> Change owner. Modifies the ownership of a file or directory.</li>
+            </ul>
+        </div>
+        
+        <hr>
+
+        <div id="module5" class="module">
+            <h2>⚙️ 5. Managing Processes & Services</h2>
+            <ul>
+                <li><span class="key-concept">Process:</span> Any running program or command on the system.</li>
+                <li><span class="command">ps aux:</span> Lists all running processes on the system.</li>
+                <li><span class="command">top / htop:</span> Displays a real-time, interactive view of system processes and resource usage.</li>
+                <li><span class="command">kill [PID]:</span> Sends a signal to a process to terminate it. PID is the Process ID.</li>
+                <li><span class="key-concept">Service / Daemon:</span> A program that runs in the background to perform a specific function (e.g., a web server).</li>
+                <li><span class="command">systemctl [action] [service]:</span> The primary tool for managing services (daemons) on modern Linux systems.
+                    <br>• <span class="key-concept">Actions:</span> <span class="command">start</span>, <span class="command">stop</span>, <span class="command">restart</span>, <span class="command">status</span>, <span class="command">enable</span> (start on boot), <span class="command">disable</span>.
+                </li>
+            </ul>
+        </div>
+        
+        <hr>
+        
+        <div id="module6" class="module">
+            <h2> BASH 6. The Bash Shell & Scripting</h2>
+            <ul>
+                <li><span class="key-concept">Bash Script:</span> A plain text file containing a series of commands. It must start with a "shebang": <span class="command">#!/bin/bash</span>.</li>
+                <li><span class="key-concept">Variables:</span> Store data. Assign with <span class="command">VAR="value"</span> and access with <span class="command">$VAR</span>.</li>
+                <li><span class="key-concept">Piping `|`:</span> Sends the output of one command as the input to another. Example: <span class="command">ls -l | less</span>.</li>
+                <li><span class="key-concept">Redirection `>` & `>>`:</span>
+                    <br>• <span class="command">></span>: Redirects output to a file, overwriting it.
+                    <br>• <span class="command">>></span>: Appends output to a file.
+                </li>
+                <li><span class="command">grep [pattern] [file]:</span> Searches for a pattern within a file or input stream.</li>
+                <li><span class="key-concept">Environment Variables:</span> System-wide variables like <span class="command">$PATH</span>, <span class="command">$HOME</span>, <span class="command">$USER</span>. View all with the <span class="command">env</span> command.</li>
+            </ul>
+        </div>
+
+        <hr>
+
+        <div id="module7" class="module">
+            <h2>📦 7. Software Management & Logs</h2>
+            <ul>
+                <li><span class="key-concept">Package Manager:</span> A tool that automates the process of installing, updating, and removing software packages.
+                    <br>• <span class="command">apt</span> (Debian/Ubuntu): <span class="command">apt update</span>, <span class="command">apt install [package]</span>.
+                    <br>• <span class="command">yum / dnf</span> (Red Hat/CentOS/Amazon Linux): <span class="command">yum install [package]</span>.
+                </li>
+                <li><span class="key-concept">Log Files:</span> Records of system events, errors, and other important information. Typically located in <span class="command">/var/log</span>.</li>
+                <li><span class="command">dmesg:</span> Displays kernel ring buffer messages, useful for diagnosing hardware issues.</li>
+                <li><span class="command">journalctl:</span> Queries and displays logs from the systemd journal. Use <span class="command">journalctl -u [service]</span> to view logs for a specific service.</li>
+                <li><span class="command">tail -f [logfile]:</span> Follows a log file in real-time, showing new entries as they are added.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- FLASHCARD MODE UI -->
+<div id="flashcard-container" class="hidden">
+    <div class="flashcard" id="flashcard">
+        <div class="flashcard-inner">
+            <div class="card-front" id="card-front"></div>
+            <div class="card-back" id="card-back"></div>
+        </div>
+    </div>
+    <div class="flashcard-nav">
+        <button id="prev-card">← Previous</button>
+        <span id="card-progress"></span>
+        <button id="next-card">Next →</button>
+    </div>
+    <div class="flashcard-button-container">
+        <button id="exit-flashcards-btn">Exit Flashcard Mode</button>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+// --- Element Selectors ---
+const mainContent = document.getElementById('main-content');
+const flashcardContainer = document.getElementById('flashcard-container');
+const startBtn = document.getElementById('start-flashcards-btn');
+const exitBtn = document.getElementById('exit-flashcards-btn');
+const flashcard = document.getElementById('flashcard');
+const cardFront = document.getElementById('card-front');
+const cardBack = document.getElementById('card-back');
+const prevBtn = document.getElementById('prev-card');
+const nextBtn = document.getElementById('next-card');
+const cardProgress = document.getElementById('card-progress');
+
+// --- State ---
+let flashcards = [];
+let currentCardIndex = 0;
+
+// --- Functions ---
+
+// 1. Scrape the page content to build the flashcards array
+function generateFlashcards() {
+    flashcards = []; // Clear existing cards
+    const listItems = document.querySelectorAll('#main-content li');
+    
+    listItems.forEach(item => {
+        const termElement = item.querySelector('.command, .key-concept');
+        if (termElement) {
+            // Clone the item to avoid modifying the original page content
+            const clone = item.cloneNode(true);
+            const termClone = clone.querySelector('.command, .key-concept');
+
+            const term = termClone.textContent.trim().replace(':', '');
+            
+            // Remove the term span to get the definition
+            termClone.parentNode.removeChild(termClone);
+            let definition = clone.innerHTML.replace(/<br>/g, '\n').trim();
+            definition = definition.replace(/^:\s*/, ''); // Clean up leading colons
+
+            flashcards.push({ term, definition });
+        }
+    });
+}
+
+// 2. Display a card based on its index
+function showCard(index) {
+    if (flashcards.length === 0) return;
+    
+    const card = flashcards[index];
+    cardFront.textContent = card.term;
+    cardBack.innerHTML = card.definition; // Use innerHTML to render newlines
+    
+    cardProgress.textContent = `${index + 1} / ${flashcards.length}`;
+    
+    // Ensure card is not flipped when showing a new one
+    flashcard.classList.remove('is-flipped');
+}
+
+// 3. Toggle between flashcard mode and main content
+function toggleFlashcardMode(show) {
+    if (show) {
+        generateFlashcards();
+        if (flashcards.length > 0) {
+            currentCardIndex = 0;
+            showCard(currentCardIndex);
+            mainContent.classList.add('hidden');
+            flashcardContainer.classList.remove('hidden');
+        } else {
+            alert('No flashcards found to display!');
+        }
+    } else {
+        mainContent.classList.remove('hidden');
+        flashcardContainer.classList.add('hidden');
+    }
+}
+
+// --- Event Listeners ---
+startBtn.addEventListener('click', () => toggleFlashcardMode(true));
+exitBtn.addEventListener('click', () => toggleFlashcardMode(false));
+
+flashcard.addEventListener('click', () => {
+    flashcard.classList.toggle('is-flipped');
+});
+
+nextBtn.addEventListener('click', () => {
+    currentCardIndex = (currentCardIndex + 1) % flashcards.length;
+    showCard(currentCardIndex);
+});
+
+prevBtn.addEventListener('click', () => {
+    currentCardIndex = (currentCardIndex - 1 + flashcards.length) % flashcards.length;
+    showCard(currentCardIndex);
+});
+});
+</script>
+</body>

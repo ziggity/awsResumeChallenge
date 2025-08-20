@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate AWS Cloud Practitioner (CLF-C02) Study Guide</title>
+    <style>
+        /* General Body Styles */
+        :root {
+            --aws-orange: #ff9900;
+            --aws-dark-blue: #232f3e;
+            --light-gray: #f4f7f9;
+            --text-color: #333;
+            --card-bg: #fff;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Main Content Container */
+        .container {
+            max-width: 950px;
+            margin: auto;
+            background: var(--card-bg);
+            padding: 20px 40px;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Headings */
+        h1, h2 {
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--aws-orange);
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            color: var(--aws-dark-blue);
+        }
+        
+        /* Intro & Navigation */
+        .intro {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+            color: #555;
+        }
+
+        .quick-nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px;
+            background-color: #fafafa;
+            border-radius: 8px;
+            margin-bottom: 40px;
+        }
+
+        .quick-nav a {
+            text-decoration: none;
+            background-color: var(--aws-dark-blue);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .quick-nav a:hover {
+            background-color: var(--aws-orange);
+            transform: translateY(-2px);
+        }
+        
+        /* Modules & Lists */
+        .module {
+            margin-bottom: 40px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border-left: 5px solid var(--aws-dark-blue);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        li:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+        }
+
+        /* Key Term Styling */
+        .service-name, .key-concept {
+            font-weight: bold;
+        }
+        .service-name { color: #d32f2f; }
+        .key-concept { color: #388e3c; }
+
+        /* --- FLASHCARD MODE STYLES --- */
+        .hidden {
+            display: none !important;
+        }
+        
+        .flashcard-button-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        #start-flashcards-btn, #exit-flashcards-btn {
+            background-color: var(--aws-orange);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        #start-flashcards-btn:hover, #exit-flashcards-btn:hover {
+            background-color: #e68a00;
+            transform: scale(1.05);
+        }
+
+        #flashcard-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .flashcard {
+            width: 90%;
+            max-width: 600px;
+            height: 400px;
+            background-color: transparent;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flashcard.is-flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            font-size: 1.5em;
+            box-sizing: border-box; /* Ensures padding is included in width/height */
+        }
+
+        .card-front {
+            background-color: var(--card-bg);
+            color: var(--aws-dark-blue);
+        }
+
+        .card-back {
+            background-color: var(--aws-dark-blue);
+            color: white;
+            transform: rotateY(180deg);
+            font-size: 1.1em;
+            line-height: 1.5;
+            white-space: pre-wrap; /* Respects newlines from <br> */
+        }
+
+        .flashcard-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            gap: 20px;
+        }
+
+        .flashcard-nav button {
+            background-color: var(--card-bg);
+            border: 2px solid var(--aws-dark-blue);
+            color: var(--aws-dark-blue);
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        #card-progress {
+            color: white;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 20px;
+            }
+            h1 { font-size: 2em; }
+            h2 { font-size: 1.5em; }
+            .quick-nav { flex-direction: column; align-items: center; }
+            .card-front { font-size: 1.3em; }
+            .card-back { font-size: 1em; }
+        }
+    </style>
+</head>
+<body>
+    <div id="main-content">
+        <div class="container">
+            <h1>AWS Cloud Practitioner (CLF-C02) Study Guide</h1>
+            <p class="intro">Your quick-reference guide for the core concepts, services, and best practices needed to ace the AWS CCP exam. Good luck! 🚀</p>
+
+            <div class="flashcard-button-container">
+                <button id="start-flashcards-btn">🧠 Start Flashcard Mode</button>
+            </div>
+    
+            <nav class="quick-nav">
+                <a href="#module1">Cloud Concepts</a>
+                <a href="#module2">Billing & Pricing</a>
+                <a href="#module3">Global Infrastructure</a>
+                <a href="#module4">Security</a>
+                <a href="#module5">Networking</a>
+                <a href="#module6">Compute</a>
+                <a href="#module7">Storage</a>
+                <a href="#module8">Databases</a>
+                <a href="#module9">Architecture</a>
+                <a href="#module10">Monitoring</a>
+                <a href="#module11">Management</a>
+                <a href="#module12">Migration</a>
+            </nav>
+    
+            <div id="module1" class="module">
+                <h2>☁️ 1. Cloud Concepts</h2>
+                <ul>
+                    <li><span class="key-concept">Cloud Computing:</span> On-demand delivery of IT resources over the internet with pay-as-you-go pricing.</li>
+                    <li><span class="key-concept">6 Advantages of Cloud:</span> 
+                        <br>1. Trade capital expense (CapEx) for variable expense (OpEx).
+                        <br>2. Benefit from massive economies of scale.
+                        <br>3. Stop guessing capacity.
+                        <br>4. Increase speed and agility.
+                        <br>5. Stop spending money running and maintaining data centers.
+                        <br>6. Go global in minutes.
+                    </li>
+                    <li><span class="key-concept">Deployment Models:</span>
+                        <br>• <span class="service-name">Public Cloud:</span> Everything built on the cloud provider (e.g., AWS, Azure, GCP).
+                        <br>• <span class="service-name">Private Cloud (On-premises):</span> Resources deployed in your own data center using virtualization.
+                        <br>• <span class="service-name">Hybrid Cloud:</span> A mix of public and private clouds connected together.
+                    </li>
+                    <li><span class="key-concept">Service Models:</span>
+                        <br>• <span class="service-name">IaaS (Infrastructure as a Service):</span> Basic building blocks for cloud IT (e.g., EC2, EBS). You manage the OS and applications.
+                        <br>• <span class="service-name">PaaS (Platform as a Service):</span> AWS manages the underlying infrastructure and OS; you focus on deploying your code (e.g., Elastic Beanstalk, Lambda).
+                        <br>• <span class="service-name">SaaS (Software as a Service):</span> Completed product run and managed by the service provider (e.g., Gmail, Office 365, or AWS's own Chime).
+                    </li>
+                </ul>
+            </div>
+            
+            <hr>
+    
+            <div id="module2" class="module">
+                <h2>💲 2. Cloud Economics and Billing</h2>
+                <ul>
+                    <li><span class="key-concept">Pricing Models:</span>
+                        <br>• <span class="service-name">On-Demand:</span> Pay by the hour/second with no long-term commitment.
+                        <br>• <span class="service-name">Reserved Instances:</span> 1 or 3-year term for a significant discount.
+                        <br>• <span class="service-name">Savings Plans:</span> 1 or 3-year term, offers more flexibility than RIs.
+                        <br>• <span class="service-name">Spot Instances:</span> Up to 90% off for fault-tolerant workloads that can be interrupted.
+                        <br>• <span class="service-name">Dedicated Hosts:</span> A physical server dedicated to your use, for compliance needs.
+                    </li>
+                    <li><span class="key-concept">Billing & Cost Tools:</span>
+                        <br>• <span class="service-name">AWS Free Tier:</span> Offers free usage for certain services up to a specific limit for 12 months, plus an "Always Free" tier.
+                        <br>• <span class="service-name">AWS Organizations:</span> Centrally manage billing and access for multiple AWS accounts. Allows for <span class="key-concept">Consolidated Billing</span>.
+                        <br>• <span class="service-name">AWS Cost Explorer:</span> Visualize, understand, and manage your AWS costs and usage over time.
+                        <br>• <span class="service-name">AWS Budgets:</span> Set custom budgets that alert you when costs exceed your thresholds.
+                        <br>• <span class="service-name">AWS Pricing Calculator:</span> Estimate the cost of your solution architecture.
+                        <br>• <span class="service-name">TCO Calculator:</span> Total Cost of Ownership. Compares the cost of running your workload on-premises vs. on AWS.
+                    </li>
+                    <li><span class="key-concept">Support Plans:</span>
+                        <br>• <span class="service-name">Basic:</span> Free. No tech support.
+                        <br>• <span class="service-name">Developer:</span> Business hours tech support. ~$29/mo.
+                        <br>• <span class="service-name">Business:</span> 24/7 support, faster response times. ~$100/mo. Access to <span class="service-name">Trusted Advisor</span> full checks.
+                        <br>• <span class="service-name">Enterprise:</span> Includes a designated Technical Account Manager (TAM). ~$15,000/mo.
+                    </li>
+                </ul>
+            </div>
+            
+            <hr>
+    
+            <div id="module3" class="module">
+                <h2>🌎 3. AWS Global Infrastructure</h2>
+                <ul>
+                    <li><span class="key-concept">Region:</span> A physical geographic location in the world with multiple Availability Zones. Regions are isolated from each other.</li>
+                    <li><span class="key-concept">Availability Zone (AZ):</span> One or more discrete data centers with redundant power, networking, and connectivity. They are physically separate but connected with low-latency links.</li>
+                    <li><span class="key-concept">Edge Location:</span> A site that <span class="service-name">CloudFront</span> (CDN) uses to cache copies of your content closer to end-users for faster delivery.</li>
+                    <li><span class="key-concept">High Availability:</span> Designing systems to remain operational by using multiple AZs. If one AZ fails, the application still runs in another.</li>
+                    <li><span class="key-concept">Fault Tolerance:</span> A property that enables a system to continue operating properly in the event of the failure of some of its components.</li>
+                    <li><span class="key-concept">Scalability vs. Elasticity:</span>
+                        <br>• <span class="service-name">Scalability:</span> Ability to handle growing amounts of work (scale up/out).
+                        <br>• <span class="service-name">Elasticity:</span> Ability to automatically acquire resources as you need them and release them when you no longer do (e.g., Auto Scaling).
+                    </li>
+                </ul>
+            </div>
+            
+            <hr>
+    
+            <div id="module4" class="module">
+                <h2>🔐 4. AWS Cloud Security</h2>
+                <ul>
+                    <li><span class="key-concept">Shared Responsibility Model:</span>
+                        <br>• <span class="service-name">AWS is responsible for "Security OF the Cloud":</span> Securing the global infrastructure, hardware, software, networking, and facilities.
+                        <br>• <span class="service-name">Customer is responsible for "Security IN the Cloud":</span> Data security, identity and access management, OS/network configuration, firewall rules.
+                    </li>
+                    <li><span class="service-name">IAM (Identity and Access Management):</span> Manage access to AWS services securely. <span class="key-concept">Principle of Least Privilege</span> is key.
+                        <br>• <span class="service-name">Users:</span> End users (people, applications).
+                        <br>• <span class="service-name">Groups:</span> A collection of users with shared permissions.
+                        <br>• <span class="service-name">Roles:</span> An identity with permissions that can be assumed by a user or service. Best for temporary access.
+                        <br>• <span class="service-name">Policies:</span> JSON documents that define permissions.
+                    </li>
+                    <li><span class="key-concept">Security Services:</span>
+                        <br>• <span class="service-name">AWS Shield:</span> Managed DDoS (Distributed Denial of Service) protection. Standard (free) and Advanced tiers.
+                        <br>• <span class="service-name">AWS WAF (Web Application Firewall):</span> Protects web applications from common web exploits (e.g., SQL injection, cross-site scripting) at the application layer.
+                        <br>• <span class="service-name">AWS KMS (Key Management Service):</span> Create and manage encryption keys.
+                        <br>• <span class="service-name">Amazon Inspector:</span> Automated security assessment service for EC2 instances.
+                        <br>• <span class="service-name">Amazon GuardDuty:</span> Intelligent threat detection service that monitors for malicious activity.
+                        <br>• <span class="service-name">Amazon Macie:</span> A data security service that uses machine learning to discover, classify, and protect sensitive data (like PII) in S3.
+                    </li>
+                </ul>
+            </div>
+            
+            <hr>
+    
+            <div id="module5" class="module">
+                <h2>🌐 5. Networking and Content Delivery</h2>
+                <ul>
+                    <li><span class="service-name">VPC (Virtual Private Cloud):</span> Your own logically isolated section of the AWS Cloud where you can launch resources in a virtual network you define.</li>
+                    <li><span class="key-concept">VPC Components:</span>
+                        <br>• <span class="service-name">Subnet:</span> A range of IP addresses in your VPC. Can be <span class="key-concept">Public</span> (access to internet) or <span class="key-concept">Private</span>.
+                        <br>• <span class="service-name">Internet Gateway:</span> Allows communication between your VPC and the internet.
+                        <br>• <span class="service-name">Security Group:</span> A stateful firewall for EC2 instances. Acts at the instance level.
+                        <br>• <span class="service-name">NACL (Network Access Control List):</span> A stateless firewall for subnets. Acts at the subnet level.
+                    </li>
+                    <li><span class="service-name">Route 53:</span> A scalable and highly available Domain Name System (DNS) web service. Can also perform health checks.</li>
+                    <li><span class="service-name">CloudFront:</span> Content Delivery Network (CDN). Caches content at Edge Locations to deliver it to users with low latency.</li>
+                    <li><span class="service-name">Direct Connect:</span> A dedicated, private physical network connection from your on-premises data center to AWS.</li>
+                </ul>
+            </div>
+            
+            <hr>
+            
+            <div id="module6" class="module">
+                <h2>💻 6. Compute</h2>
+                <ul>
+                    <li><span class="service-name">EC2 (Elastic Compute Cloud):</span> A virtual server in the cloud. Provides secure, resizable compute capacity.</li>
+                    <li><span class="service-name">Elastic Beanstalk:</span> A PaaS service for deploying and scaling web applications. You upload your code, and Beanstalk handles the deployment, capacity provisioning, load balancing, and auto-scaling.</li>
+                    <li><span class="service-name">Lambda:</span> A serverless compute service. Run code without provisioning or managing servers. You pay only for the compute time you consume. It's event-driven.</li>
+                    <li><span class="key-concept">Containers:</span>
+                        <br>• <span class="service-name">ECS (Elastic Container Service):</span> A highly scalable, high-performance container orchestration service.
+                        <br>• <span class="service-name">Fargate:</span> A serverless compute engine for containers. Works with ECS and EKS. You don't manage the underlying EC2 instances.
+                        <br>• <span class="service-name">EKS (Elastic Kubernetes Service):</span> A managed service to run Kubernetes on AWS.
+                    </li>
+                </ul>
+            </div>
+    
+            <hr>
+    
+            <div id="module7" class="module">
+                <h2>💾 7. Storage</h2>
+                <ul>
+                    <li><span class="service-name">S3 (Simple Storage Service):</span> Infinitely scalable object storage. Data is stored in <span class="key-concept">Buckets</span>. Highly durable (11 nines).</li>
+                    <li><span class="key-concept">S3 Storage Classes:</span>
+                        <br>• <span class="service-name">S3 Standard:</span> For frequently accessed data.
+                        <br>• <span class="service-name">S3 Intelligent-Tiering:</span> Automatically moves data to the most cost-effective tier.
+                        <br>• <span class="service-name">S3 Standard-IA / One Zone-IA:</span> For infrequently accessed data.
+                        <br>• <span class="service-name">S3 Glacier (Instant, Flexible, Deep Archive):</span> For long-term data archiving. Very low cost.
+                    </li>
+                    <li><span class="service-name">EBS (Elastic Block Store):</span> Persistent block-level storage volumes for use with EC2 instances (like a virtual hard drive). Tied to a specific AZ.</li>
+                    <li><span class="service-name">EFS (Elastic File System):</span> A managed, scalable file storage service for use with EC2. Can be mounted on multiple instances across multiple AZs.</li>
+                    <li><span class="service-name">Storage Gateway:</span> A hybrid cloud storage service that gives you on-premises access to virtually unlimited cloud storage.</li>
+                </ul>
+            </div>
+    
+            <hr>
+    
+            <div id="module8" class="module">
+                <h2>🗄️ 8. Databases</h2>
+                <ul>
+                    <li><span class="service-name">RDS (Relational Database Service):</span> A managed service for relational databases. Supports engines like MySQL, PostgreSQL, MariaDB, Oracle, SQL Server, and <span class="service-name">Amazon Aurora</span>.</li>
+                    <li><span class="service-name">Amazon Aurora:</span> AWS's own high-performance, fully managed relational database. Compatible with MySQL and PostgreSQL.</li>
+                    <li><span class="service-name">DynamoDB:</span> A fast, flexible, and highly scalable NoSQL key-value database. Fully managed and serverless.</li>
+                    <li><span class="service-name">ElastiCache:</span> An in-memory data store or cache service. Improves application performance by retrieving data from fast, managed, in-memory caches. Supports Redis and Memcached.</li>
+                    <li><span class="service-name">Redshift:</span> A fast, petabyte-scale data warehouse service for analytics.</li>
+                </ul>
+            </div>
+            
+            <hr>
+    
+            <div id="module9" class="module">
+                <h2>🏛️ 9. Cloud Architecture</h2>
+                <ul>
+                    <li><span class="key-concept">Well-Architected Framework:</span> A set of best practices for designing and operating reliable, secure, efficient, and cost-effective systems in the cloud.
+                        <br>• <strong>Five Pillars:</strong> Operational Excellence, Security, Reliability, Performance Efficiency, and Cost Optimization.
+                    </li>
+                    <li><span class="key-concept">Design Principles:</span>
+                        <br>• <span class="key-concept">Design for failure:</span> Assume components will fail and build resilient systems.
+                        <br>• <span class="key-concept">Decouple components:</span> Use services like <span class="service-name">SQS (Simple Queue Service)</span> and <span class="service-name">SNS (Simple Notification Service)</span> to separate application tiers.
+                        <br>• <span class="key-concept">Implement elasticity:</span> Use services like <span class="service-name">Auto Scaling</span> and <span class="service-name">Elastic Load Balancing (ELB)</span>.
+                    </li>
+                    <li><span class="service-name">Elastic Load Balancing (ELB):</span> Automatically distributes incoming application traffic across multiple targets, such as EC2 instances.</li>
+                </ul>
+            </div>
+    
+            <hr>
+    
+            <div id="module10" class="module">
+                <h2>📈 10. Auto Scaling and Monitoring</h2>
+                <ul>
+                    <li><span class="service-name">CloudWatch:</span> A monitoring and observability service.
+                        <br>• <span class="key-concept">Metrics:</span> Collects monitoring data from AWS resources.
+                        <br>• <span class="key-concept">Alarms:</span> Trigger notifications based on metric thresholds.
+                        <br>• <span class="key-concept">Logs:</span> Centralize logs from your systems and applications.
+                        <br>• <span class="key-concept">Events:</span> Delivers a near real-time stream of system events that describe changes in AWS resources.
+                    </li>
+                    <li><span class="service-name">CloudTrail:</span> Monitors and records account activity across your AWS infrastructure. Think of it as an audit trail for all API calls ("who did what, and when?").</li>
+                    <li><span class="service-name">Auto Scaling:</span> Automatically adds or removes EC2 instances according to conditions you define. Helps ensure you have the correct number of instances available to handle your application's load.</li>
+                </ul>
+            </div>
+            
+            <hr>
+            
+            <div id="module11" class="module">
+                <h2>🛠️ 11. Management & Governance</h2>
+                <ul>
+                    <li><span class="service-name">AWS Trusted Advisor:</span> An online tool that provides real-time guidance to help you provision your resources following AWS best practices across cost optimization, performance, security, and fault tolerance.</li>
+                    <li><span class="service-name">AWS CloudFormation:</span> An Infrastructure as Code (IaC) service. Allows you to model and provision your AWS resources using templates (JSON/YAML).</li>
+                    <li><span class="service-name">AWS Organizations:</span> Helps you centrally govern your environment as you grow. Manage multiple accounts, apply policies (<span class="key-concept">SCPs - Service Control Policies</span>), and simplify billing.</li>
+                    <li><span class="service-name">AWS Systems Manager:</span> Gives you visibility and control of your infrastructure on AWS. You can view operational data and automate tasks across your resources.</li>
+                </ul>
+            </div>
+    
+            <hr>
+    
+            <div id="module12" class="module">
+                <h2>🚚 12. Migration & Transfer</h2>
+                <ul>
+                    <li><span class="service-name">AWS DMS (Database Migration Service):</span> Helps you migrate databases to AWS easily and securely. The source database remains fully operational during the migration.</li>
+                    <li><span class="service-name">AWS Snow Family:</span> Services for physical data transport.
+                        <br>• <span class="service-name">Snowcone:</span> Smallest device, ~8 TB of usable storage.
+                        <br>• <span class="service-name">Snowball Edge:</span> Petabyte-scale data transport with on-board storage and compute capabilities.
+                        <br>• <span class="service-name">Snowmobile:</span> Exabyte-scale data transfer service using a 45-foot long shipping container.
+                    </li>
+                </ul>
+            </div>
+             </div>
+    </div>
+
+    <div id="flashcard-container" class="hidden">
+        <div class="flashcard" id="flashcard">
+            <div class="flashcard-inner">
+                <div class="card-front" id="card-front"></div>
+                <div class="card-back" id="card-back"></div>
+            </div>
+        </div>
+        <div class="flashcard-nav">
+            <button id="prev-card">← Previous</button>
+            <span id="card-progress"></span>
+            <button id="next-card">Next →</button>
+        </div>
+        <div class="flashcard-button-container">
+            <button id="exit-flashcards-btn">Exit Flashcard Mode</button>
+        </div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // --- Element Selectors ---
+    const mainContent = document.getElementById('main-content');
+    const flashcardContainer = document.getElementById('flashcard-container');
+    const startBtn = document.getElementById('start-flashcards-btn');
+    const exitBtn = document.getElementById('exit-flashcards-btn');
+    const flashcard = document.getElementById('flashcard');
+    const cardFront = document.getElementById('card-front');
+    const cardBack = document.getElementById('card-back');
+    const prevBtn = document.getElementById('prev-card');
+    const nextBtn = document.getElementById('next-card');
+    const cardProgress = document.getElementById('card-progress');
+
+    // --- State ---
+    let flashcards = [];
+    let currentCardIndex = 0;
+
+    // --- Functions ---
+
+    // 1. Scrape the page content to build the flashcards array
+    function generateFlashcards() {
+        flashcards = []; // Clear existing cards
+        const listItems = document.querySelectorAll('#main-content li');
+        
+        listItems.forEach(item => {
+            const termElement = item.querySelector('.service-name, .key-concept');
+            if (termElement) {
+                // Clone the item to avoid modifying the original page content
+                const clone = item.cloneNode(true);
+                const termClone = clone.querySelector('.service-name, .key-concept');
+
+                const term = termClone.textContent.trim().replace(':', '');
+                
+                // Remove the term span to get the definition
+                termClone.parentNode.removeChild(termClone);
+                let definition = clone.innerHTML.replace(/<br>/g, '\n').trim();
+                definition = definition.replace(/^:\s*/, ''); // Clean up leading colons
+
+                flashcards.push({ term, definition });
+            }
+        });
+    }
+
+    // 2. Display a card based on its index
+    function showCard(index) {
+        if (flashcards.length === 0) return;
+        
+        const card = flashcards[index];
+        cardFront.textContent = card.term;
+        cardBack.innerHTML = card.definition; // Use innerHTML to render newlines
+        
+        cardProgress.textContent = `${index + 1} / ${flashcards.length}`;
+        
+        // Ensure card is not flipped when showing a new one
+        flashcard.classList.remove('is-flipped');
+    }
+
+    // 3. Toggle between flashcard mode and main content
+    function toggleFlashcardMode(show) {
+        if (show) {
+            generateFlashcards();
+            if (flashcards.length > 0) {
+                currentCardIndex = 0;
+                showCard(currentCardIndex);
+                mainContent.classList.add('hidden');
+                flashcardContainer.classList.remove('hidden');
+            } else {
+                alert('No flashcards found to display!');
+            }
+        } else {
+            mainContent.classList.remove('hidden');
+            flashcardContainer.classList.add('hidden');
+        }
+    }
+
+    // --- Event Listeners ---
+    startBtn.addEventListener('click', () => toggleFlashcardMode(true));
+    exitBtn.addEventListener('click', () => toggleFlashcardMode(false));
+
+    flashcard.addEventListener('click', () => {
+        flashcard.classList.toggle('is-flipped');
+    });
+
+    nextBtn.addEventListener('click', () => {
+        currentCardIndex = (currentCardIndex + 1) % flashcards.length;
+        showCard(currentCardIndex);
+    });
+
+    prevBtn.addEventListener('click', () => {
+        currentCardIndex = (currentCardIndex - 1 + flashcards.length) % flashcards.length;
+        showCard(currentCardIndex);
+    });
+});
+</script>
+
+
+
+</body>
+</html>
+```

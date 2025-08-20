@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Networking Fundamentals Study Guide</title>
+    <style>
+        /* General Body Styles */
+        :root {
+            --network-blue: #007bff;
+            --dark-bg: #2e3436;
+            --light-gray: #f4f7f9;
+            --text-color: #333;
+            --card-bg: #fff;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Main Content Container */
+        .container {
+            max-width: 950px;
+            margin: auto;
+            background: var(--card-bg);
+            padding: 20px 40px;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Headings */
+        h1, h2 {
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--network-blue);
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            color: var(--dark-bg);
+        }
+        
+        /* Intro & Navigation */
+        .intro {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+            color: #555;
+        }
+
+        .quick-nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px;
+            background-color: #fafafa;
+            border-radius: 8px;
+            margin-bottom: 40px;
+        }
+
+        .quick-nav a {
+            text-decoration: none;
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .quick-nav a:hover {
+            background-color: var(--network-blue);
+            transform: translateY(-2px);
+        }
+        
+        /* Modules & Lists */
+        .module {
+            margin-bottom: 40px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border-left: 5px solid var(--dark-bg);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        li:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+        }
+
+        /* Key Term Styling */
+        .command, .key-concept {
+            font-weight: bold;
+        }
+        .command { 
+            color: #c0392b; 
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .key-concept { color: #27ae60; }
+
+        /* --- FLASHCARD MODE STYLES --- */
+        .hidden {
+            display: none !important;
+        }
+        
+        .flashcard-button-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        #start-flashcards-btn, #exit-flashcards-btn {
+            background-color: var(--network-blue);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        #start-flashcards-btn:hover, #exit-flashcards-btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        #flashcard-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .flashcard {
+            width: 90%;
+            max-width: 600px;
+            height: 400px;
+            background-color: transparent;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flashcard.is-flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            font-size: 1.5em;
+            box-sizing: border-box;
+        }
+
+        .card-front {
+            background-color: var(--card-bg);
+            color: var(--dark-bg);
+        }
+
+        .card-back {
+            background-color: var(--dark-bg);
+            color: white;
+            transform: rotateY(180deg);
+            font-size: 1.1em;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .flashcard-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            gap: 20px;
+        }
+
+        .flashcard-nav button {
+            background-color: var(--card-bg);
+            border: 2px solid var(--dark-bg);
+            color: var(--dark-bg);
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        #card-progress {
+            color: white;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container { padding: 20px; }
+            h1 { font-size: 2em; }
+            h2 { font-size: 1.5em; }
+            .quick-nav { flex-direction: column; align-items: center; }
+            .card-front { font-size: 1.3em; }
+            .card-back { font-size: 1em; }
+        }
+    </style>
+</head>
+<body>
+    <div id="main-content">
+        <div class="container">
+            <h1>Networking Fundamentals Study Guide</h1>
+            <p class="intro">A guide to core networking concepts, protocols, and practices in the AWS Cloud. Use this cheat sheet and flashcard mode to build a strong foundation. 🌐</p>
+
+            <div class="flashcard-button-container">
+                <button id="start-flashcards-btn">🧠 Start Flashcard Mode</button>
+            </div>
+    
+            <nav class="quick-nav">
+                <a href="#module1">Core Concepts</a>
+                <a href="#module2">Internet Protocol</a>
+                <a href="#module3">AWS Networking</a>
+                <a href="#module4">Subnetting</a>
+                <a href="#module5">Protocols & Troubleshooting</a>
+            </nav>
+    
+            <div id="module1" class="module">
+                <h2>🔌 1. Core Networking Concepts</h2>
+                <ul>
+                    <li><span class="key-concept">Router:</span> A device that forwards data packets between computer networks, directing traffic on the internet.</li>
+                    <li><span class="key-concept">Switch:</span> A device that connects other devices together within the same network (e.g., a LAN) and forwards data to the correct device.</li>
+                    <li><span class="key-concept">LAN (Local Area Network):</span> A network that connects computers within a limited area such as a home, school, or office building.</li>
+                    <li><span class="key-concept">WAN (Wide Area Network):</span> A network that extends over a large geographical area, such as the internet.</li>
+                    <li><span class="key-concept">OSI Model:</span> A 7-layer conceptual framework for how network communications work. (Physical, Data Link, Network, Transport, Session, Presentation, Application).</li>
+                    <li><span class="key-concept">TCP/IP Model:</span> A 4-layer model that is the practical implementation used for the internet. (Network Interface, Internet, Transport, Application).</li>
+                </ul>
+            </div>
+            
+            <hr>
+    
+            <div id="module2" class="module">
+                <h2>📍 2. Internet Protocol (IP)</h2>
+                <ul>
+                    <li><span class="key-concept">IP Address:</span> A unique numerical label assigned to each device connected to a computer network that uses the Internet Protocol for communication.</li>
+                    <li><span class="key-concept">Public IP Address:</span> An address that is routable on the global internet. It's assigned by an Internet Service Provider (ISP).</li>
+                    <li><span class="key-concept">Private IP Address:</span> An address used for local networks (LANs) that is not routable on the internet. Common ranges are 10.0.0.0/8, 172.16.0.0/12, and 192.168.0.0/16.</li>
+                    <li><span class="key-concept">Static IP Address:</span> An IP address that is manually configured for a device and does not change.</li>
+                    <li><span class="key-concept">Dynamic IP Address:</span> An IP address that is automatically assigned to a device by a DHCP server for a certain period.</li>
+                    <li><span class="key-concept">IPv4 vs IPv6:</span> IPv4 is a 32-bit address (e.g., 192.168.1.1), while IPv6 is a 128-bit address designed to overcome the address shortage of IPv4.</li>
+                </ul>
+            </div>
+            
+            <hr>
+    
+            <div id="module3" class="module">
+                <h2>☁️ 3. Networking in the AWS Cloud</h2>
+                <ul>
+                    <li><span class="key-concept">VPC (Virtual Private Cloud):</span> Your own logically isolated section of the AWS Cloud where you can launch AWS resources in a virtual network that you define.</li>
+                    <li><span class="key-concept">Subnet:</span> A range of IP addresses within your VPC.
+                        <br>• <span class="key-concept">Public Subnet:</span> A subnet whose traffic is routed to an Internet Gateway.
+                        <br>• <span class="key-concept">Private Subnet:</span> A subnet that does not have a route to the Internet Gateway.
+                    </li>
+                    <li><span class="key-concept">Internet Gateway (IGW):</span> A horizontally scaled, redundant, and highly available VPC component that allows communication between your VPC and the internet.</li>
+                    <li><span class="key-concept">Route Table:</span> A set of rules, called routes, that determine where network traffic from your subnet or gateway is directed.</li>
+                    <li><span class="key-concept">Security Group:</span> A stateful firewall for your EC2 instances to control inbound and outbound traffic at the instance level.</li>
+                    <li><span class="key-concept">NACL (Network Access Control List):</span> A stateless firewall for your VPC to control inbound and outbound traffic at the subnet level.</li>
+                </ul>
+            </div>
+            
+            <hr>
+    
+            <div id="module4" class="module">
+                <h2>➗ 4. IP Subnetting</h2>
+                <ul>
+                    <li><span class="key-concept">Subnetting:</span> The process of dividing a single, large network into smaller, more manageable sub-networks, or subnets.</li>
+                    <li><span class="key-concept">Subnet Mask:</span> A 32-bit number that separates the network portion of an IP address from the host portion.</li>
+                    <li><span class="key-concept">CIDR Notation (Classless Inter-Domain Routing):</span> A compact way to represent an IP address and its associated subnet mask. Example: <span class="command">192.168.1.0/24</span>, where /24 means the first 24 bits are the network portion.</li>
+                    <li><span class="key-concept">Benefits of Subnetting:</span> Improved security by isolating networks, reduced network traffic, and simplified administration.</li>
+                </ul>
+            </div>
+            
+            <hr>
+    
+            <div id="module5" class="module">
+                <h2>🛠️ 5. Additional Protocols & Troubleshooting</h2>
+                <ul>
+                    <li><span class="key-concept">DNS (Domain Name System):</span> The "phonebook of the internet." It translates human-readable domain names (e.g., www.google.com) into machine-readable IP addresses.</li>
+                    <li><span class="key-concept">TCP (Transmission Control Protocol):</span> A connection-oriented protocol that provides reliable, ordered, and error-checked delivery of a stream of data. (e.g., for web browsing, email).</li>
+                    <li><span class="key-concept">UDP (User Datagram Protocol):</span> A connectionless protocol that is faster but less reliable than TCP. Good for video streaming or online gaming where speed is critical.</li>
+                    <li><span class="key-concept">HTTP/HTTPS:</span> The protocol used for transmitting web pages over the internet. HTTPS is the secure, encrypted version.</li>
+                    <li><span class="command">ping [host]:</span> Sends a packet to a host to test network connectivity and measure response time.</li>
+                    <li><span class="command">traceroute / tracert [host]:</span> Traces the path that a packet takes from your computer to a destination host, showing each "hop" along the way.</li>
+                    <li><span class="command">ipconfig / ifconfig:</span> Displays the IP configuration of a network interface on Windows (<span class="command">ipconfig</span>) or Linux/macOS (<span class="command">ifconfig</span>).</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLASHCARD MODE UI -->
+    <div id="flashcard-container" class="hidden">
+        <div class="flashcard" id="flashcard">
+            <div class="flashcard-inner">
+                <div class="card-front" id="card-front"></div>
+                <div class="card-back" id="card-back"></div>
+            </div>
+        </div>
+        <div class="flashcard-nav">
+            <button id="prev-card">← Previous</button>
+            <span id="card-progress"></span>
+            <button id="next-card">Next →</button>
+        </div>
+        <div class="flashcard-button-container">
+            <button id="exit-flashcards-btn">Exit Flashcard Mode</button>
+        </div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // --- Element Selectors ---
+    const mainContent = document.getElementById('main-content');
+    const flashcardContainer = document.getElementById('flashcard-container');
+    const startBtn = document.getElementById('start-flashcards-btn');
+    const exitBtn = document.getElementById('exit-flashcards-btn');
+    const flashcard = document.getElementById('flashcard');
+    const cardFront = document.getElementById('card-front');
+    const cardBack = document.getElementById('card-back');
+    const prevBtn = document.getElementById('prev-card');
+    const nextBtn = document.getElementById('next-card');
+    const cardProgress = document.getElementById('card-progress');
+
+    // --- State ---
+    let flashcards = [];
+    let currentCardIndex = 0;
+
+    // --- Functions ---
+
+    // 1. Scrape the page content to build the flashcards array
+    function generateFlashcards() {
+        flashcards = []; // Clear existing cards
+        const listItems = document.querySelectorAll('#main-content li');
+        
+        listItems.forEach(item => {
+            const termElement = item.querySelector('.command, .key-concept');
+            if (termElement) {
+                // Clone the item to avoid modifying the original page content
+                const clone = item.cloneNode(true);
+                const termClone = clone.querySelector('.command, .key-concept');
+
+                const term = termClone.textContent.trim().replace(':', '');
+                
+                // Remove the term span to get the definition
+                termClone.parentNode.removeChild(termClone);
+                let definition = clone.innerHTML.replace(/<br>/g, '\n').trim();
+                definition = definition.replace(/^:\s*/, ''); // Clean up leading colons
+
+                flashcards.push({ term, definition });
+            }
+        });
+    }
+
+    // 2. Display a card based on its index
+    function showCard(index) {
+        if (flashcards.length === 0) return;
+        
+        const card = flashcards[index];
+        cardFront.textContent = card.term;
+        cardBack.innerHTML = card.definition; // Use innerHTML to render newlines
+        
+        cardProgress.textContent = `${index + 1} / ${flashcards.length}`;
+        
+        // Ensure card is not flipped when showing a new one
+        flashcard.classList.remove('is-flipped');
+    }
+
+    // 3. Toggle between flashcard mode and main content
+    function toggleFlashcardMode(show) {
+        if (show) {
+            generateFlashcards();
+            if (flashcards.length > 0) {
+                currentCardIndex = 0;
+                showCard(currentCardIndex);
+                mainContent.classList.add('hidden');
+                flashcardContainer.classList.remove('hidden');
+            } else {
+                alert('No flashcards found to display!');
+            }
+        } else {
+            mainContent.classList.remove('hidden');
+            flashcardContainer.classList.add('hidden');
+        }
+    }
+
+    // --- Event Listeners ---
+    startBtn.addEventListener('click', () => toggleFlashcardMode(true));
+    exitBtn.addEventListener('click', () => toggleFlashcardMode(false));
+
+    flashcard.addEventListener('click', () => {
+        flashcard.classList.toggle('is-flipped');
+    });
+
+    nextBtn.addEventListener('click', () => {
+        currentCardIndex = (currentCardIndex + 1) % flashcards.length;
+        showCard(currentCardIndex);
+    });
+
+    prevBtn.addEventListener('click', () => {
+        currentCardIndex = (currentCardIndex - 1 + flashcards.length) % flashcards.length;
+        showCard(currentCardIndex);
+    });
+});
+</script>
+
+</body>
+</html>
